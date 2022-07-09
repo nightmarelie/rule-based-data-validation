@@ -10,7 +10,7 @@ type ExperienceYears = NumberLike;
 
 type Password = string;
 
-export type ApplicationForm = {
+export type ApplicationFormData = {
   name: ApplicantName;
   phone: PhoneNumber;
   email: EmailAddress;
@@ -23,3 +23,5 @@ export type ApplicationForm = {
 
   password: Password;
 };
+
+export type ApplicationFormValidationRule = (data: ApplicationFormData) => boolean;
