@@ -1,10 +1,15 @@
-import type { ApplicationFormData, ApplicationFormValidationRule } from "./types";
-import { exists } from "./utils";
+import type { ApplicationFormValidationRule } from "./types";
+import { exists, contains } from "./utils";
+
+const onlyInternational: ApplicationFormValidationRule = ({ phone }) => phone.startsWith("+");
+
+const onlySafeCharacters: ApplicationFormValidationRule = ({ phone }) =>
+  !contains(phone, /[^\d\s\-\(\)\+]/g);
 
 export const validateName: ApplicationFormValidationRule = ({ name }) => exists(name);
 
 export const validateEmail: ApplicationFormValidationRule = ({ email }) =>
   email.includes("@") && email.includes(".");
 
-export const validatePhone: ApplicationFormValidationRule = ({ phone }) =>
-  phone.startsWith("+") && phone.search(/[^\d\s\-\(\)\+]/g) < 0;
+export const validatePhone: ApplicationFormValidationRule = (data) =>
+  onlyInternational(data) && onlySafeCharacters(data);
