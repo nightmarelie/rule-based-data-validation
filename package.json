@@ -1,0 +1,7 @@
+{
+  "name": "rule-based-data-validation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Oleksii Kryvtsov <nightmarelie@gmail.com>",
+  "license": "MIT"
+}
