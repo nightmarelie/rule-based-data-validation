@@ -45,15 +45,23 @@ type ValidationResult<TData> = {
 type ApplicationRules = ValidationRules<ApplicationFormData>;
 type ApplicationErrors = ErrorMessages<ApplicationFormData>;
 
+type FieldError = {
+  field: string;
+  message: ErrorMessage;
+};
+
 export type {
+  ApplicationFormData,
   ApplicationFormValidationRule,
   KnownSpecialty,
   ValidationRule,
   RequiresAll,
   RequiresAny,
+  ErrorMessage,
   ErrorMessages,
   ValidationRules,
   ValidationResult,
   ApplicationRules,
   ApplicationErrors,
+  FieldError,
 };
