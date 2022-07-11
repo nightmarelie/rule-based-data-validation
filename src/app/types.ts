@@ -26,4 +26,4 @@ type ApplicationFormData = {
 
 type ApplicationFormValidationRule = (data: ApplicationFormData) => boolean;
 
-export type { ApplicationFormValidationRule, KnownSpecialty };
+export type { ApplicationFormValidationRule, ApplicationFormData, KnownSpecialty };

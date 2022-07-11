@@ -1,5 +1,5 @@
-import type { ApplicationFormValidationRule } from "./types";
-import { exists, contains, inRange, yearsOf } from "./utils";
+import type { ApplicationFormValidationRule, ApplicationFormData } from "./types";
+import { exists, contains, inRange, yearsOf, isNumber } from "./utils";
 import {
   MIN_AGE,
   MAX_AGE,
@@ -14,14 +14,6 @@ const onlyInternational: ApplicationFormValidationRule = ({ phone }) => phone.st
 const onlySafeCharacters: ApplicationFormValidationRule = ({ phone }) =>
   !contains(phone, /[^\d\s\-\(\)\+]/g);
 
-const validateName: ApplicationFormValidationRule = ({ name }) => exists(name);
-
-const validateEmail: ApplicationFormValidationRule = ({ email }) =>
-  email.includes("@") && email.includes(".");
-
-const validatePhone: ApplicationFormValidationRule = (data) =>
-  onlyInternational(data) && onlySafeCharacters(data);
-
 const validDate: ApplicationFormValidationRule = ({ birthDate }) =>
   !Number.isNaN(Date.parse(birthDate));
 
@@ -34,8 +26,7 @@ const isKnownSpecialty: ApplicationFormValidationRule = ({ specialty }) =>
 const isValidCustom: ApplicationFormValidationRule = ({ customSpecialty: custom }) =>
   exists(custom) && custom.length <= MAX_SPECIALTY_LENGTH;
 
-const isNumberLike: ApplicationFormValidationRule = ({ experience }) =>
-  Number.isFinite(Number(experience));
+const isNumberLike: ApplicationFormValidationRule = ({ experience }) => isNumber(experience);
 
 const isExperienced: ApplicationFormValidationRule = ({ experience }) =>
   Number(experience) >= MIN_EXPERIENCE_YEARS;
@@ -52,17 +43,27 @@ const hasCapital: ApplicationFormValidationRule = ({ password }) =>
 const hasDigit: ApplicationFormValidationRule = ({ password }) =>
   contains(password, atLeastOneDigit);
 
+// Validation
+const validateName: ApplicationFormValidationRule = ({ name }) => exists(name);
+
+const validateEmail: ApplicationFormValidationRule = ({ email }) =>
+  email.includes("@") && email.includes(".");
+
+const validatePhone: ApplicationFormValidationRule = (data) =>
+  onlyInternational(data) && onlySafeCharacters(data);
+
+const validatePassword = (form: ApplicationFormData) =>
+  hasRequiredSize(form) && hasCapital(form) && hasDigit(form);
+
+const validateBirthDate = (form: ApplicationFormData) => validDate(form) && allowedAge(form);
+
+const validateExperience = (form: ApplicationFormData) => isNumberLike(form) && isExperienced(form);
+
 export {
   validateName,
   validateEmail,
   validatePhone,
-  validDate,
-  allowedAge,
-  isKnownSpecialty,
-  isValidCustom,
-  isNumberLike,
-  isExperienced,
-  hasRequiredSize,
-  hasCapital,
-  hasDigit,
+  validatePassword,
+  validateBirthDate,
+  validateExperience,
 };
