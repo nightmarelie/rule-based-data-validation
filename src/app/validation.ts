@@ -1,4 +1,9 @@
-import type { ApplicationFormValidationRule, ApplicationFormData } from "./types";
+import type {
+  ApplicationFormValidationRule,
+  RequiresAll,
+  RequiresAny,
+  ValidationRule,
+} from "./types";
 import { exists, contains, inRange, yearsOf, isNumber } from "./utils";
 import {
   MIN_AGE,
@@ -43,21 +48,33 @@ const hasCapital: ApplicationFormValidationRule = ({ password }) =>
 const hasDigit: ApplicationFormValidationRule = ({ password }) =>
   contains(password, atLeastOneDigit);
 
-// Validation
+// abstraction
+function all<T>(rules: List<ValidationRule<T>>): RequiresAll<T> {
+  return (data) => rules.every((isValid) => isValid(data));
+}
+
+function some<T>(rules: List<ValidationRule<T>>): RequiresAny<T> {
+  return (data) => rules.some((isValid) => isValid(data));
+}
+
+// rules
+const phoneRules = [onlyInternational, onlySafeCharacters];
+const birthDateRules = [validDate, allowedAge];
+const specialtyRules = [isKnownSpecialty, isValidCustom];
+const experienceRules = [isNumberLike, isExperienced];
+const passwordRules = [hasRequiredSize, hasCapital, hasDigit];
+
+// validators
 const validateName: ApplicationFormValidationRule = ({ name }) => exists(name);
 
 const validateEmail: ApplicationFormValidationRule = ({ email }) =>
   email.includes("@") && email.includes(".");
 
-const validatePhone: ApplicationFormValidationRule = (data) =>
-  onlyInternational(data) && onlySafeCharacters(data);
-
-const validatePassword = (form: ApplicationFormData) =>
-  hasRequiredSize(form) && hasCapital(form) && hasDigit(form);
-
-const validateBirthDate = (form: ApplicationFormData) => validDate(form) && allowedAge(form);
-
-const validateExperience = (form: ApplicationFormData) => isNumberLike(form) && isExperienced(form);
+const validatePhone = all(phoneRules);
+const validateBirthDate = all(birthDateRules);
+const validateSpecialty = some(specialtyRules);
+const validateExperience = all(experienceRules);
+const validatePassword = all(passwordRules);
 
 export {
   validateName,
@@ -65,5 +82,6 @@ export {
   validatePhone,
   validatePassword,
   validateBirthDate,
+  validateSpecialty,
   validateExperience,
 };

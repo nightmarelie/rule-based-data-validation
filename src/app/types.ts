@@ -26,4 +26,15 @@ type ApplicationFormData = {
 
 type ApplicationFormValidationRule = (data: ApplicationFormData) => boolean;
 
-export type { ApplicationFormValidationRule, ApplicationFormData, KnownSpecialty };
+type ValidationRule<T> = (data: T) => boolean;
+
+type RequiresAll<T> = ValidationRule<T>;
+type RequiresAny<T> = ValidationRule<T>;
+
+export type {
+  ApplicationFormValidationRule,
+  KnownSpecialty,
+  ValidationRule,
+  RequiresAll,
+  RequiresAny,
+};
