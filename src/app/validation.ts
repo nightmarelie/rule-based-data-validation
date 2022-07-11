@@ -40,6 +40,18 @@ const isNumberLike: ApplicationFormValidationRule = ({ experience }) =>
 const isExperienced: ApplicationFormValidationRule = ({ experience }) =>
   Number(experience) >= MIN_EXPERIENCE_YEARS;
 
+const atLeastOneCapital = /[A-Z]/g;
+const atLeastOneDigit = /\d/gi;
+
+const MIN_PASSWORD_SIZE = 10;
+
+const hasRequiredSize: ApplicationFormValidationRule = ({ password }) =>
+  password.length >= MIN_PASSWORD_SIZE;
+const hasCapital: ApplicationFormValidationRule = ({ password }) =>
+  contains(password, atLeastOneCapital);
+const hasDigit: ApplicationFormValidationRule = ({ password }) =>
+  contains(password, atLeastOneDigit);
+
 export {
   validateName,
   validateEmail,
@@ -50,4 +62,7 @@ export {
   isValidCustom,
   isNumberLike,
   isExperienced,
+  hasRequiredSize,
+  hasCapital,
+  hasDigit,
 };
