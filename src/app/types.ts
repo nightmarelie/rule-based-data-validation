@@ -31,10 +31,27 @@ type ValidationRule<T> = (data: T) => boolean;
 type RequiresAll<T> = ValidationRule<T>;
 type RequiresAny<T> = ValidationRule<T>;
 
+type ErrorMessage = string;
+
+type ErrorMessages<TData> = Partial<Record<keyof TData, ErrorMessage>>;
+
+type ValidationRules<TData> = Partial<Record<keyof TData, ValidationRule<TData>>>;
+
+type ValidationResult<TData> = {
+  valid: boolean;
+  errors: ErrorMessages<TData>;
+};
+
+type ApplicationRules = ValidationRules<ApplicationFormData>;
+type ApplicationErrors = ErrorMessages<ApplicationFormData>;
+
 export type {
   ApplicationFormValidationRule,
   KnownSpecialty,
   ValidationRule,
   RequiresAll,
   RequiresAny,
+  ValidationResult,
+  ApplicationRules,
+  ApplicationErrors,
 };

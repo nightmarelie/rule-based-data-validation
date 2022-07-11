@@ -3,6 +3,8 @@ import type {
   RequiresAll,
   RequiresAny,
   ValidationRule,
+  ApplicationRules,
+  ApplicationErrors,
 } from "./types";
 import { exists, contains, inRange, yearsOf, isNumber } from "./utils";
 import {
@@ -77,7 +79,7 @@ const validateExperience = all(experienceRules);
 const validatePassword = all(passwordRules);
 
 // main validator
-export const validateForm = all([
+const validateForm = all([
   validateName,
   validateEmail,
   validatePhone,
@@ -86,3 +88,26 @@ export const validateForm = all([
   validateExperience,
   validatePassword,
 ]);
+
+const rules: ApplicationRules = {
+  name: validateName,
+  email: validateEmail,
+  phone: validatePhone,
+  birthDate: validateBirthDate,
+  specialty: validateSpecialty,
+  experience: validateExperience,
+  password: validatePassword,
+};
+
+const errors: ApplicationErrors = {
+  name: "Your name is required for this mission.",
+  email: "Correct email format is user@example.com.",
+  phone: "Please, use only “+”, “-”, “(”, “)”, and a whitespace.",
+  birthDate: "We require applicants to be between 20 and 50 years.",
+  specialty: "Please, use up to 50 characters to describe your specialty.",
+  experience: "For this mission, we search for experience 3+ years.",
+  password:
+    "Your password must be longer than 10 characters, include a capital letter and a digit.",
+};
+
+export { validateForm };
