@@ -1,4 +1,4 @@
-import type { ApplicationFormValidationRule } from "./types";
+import type { ApplicationFormValidationRule, KnownSpecialty } from "./types";
 import { exists, contains, inRange, yearsOf } from "./utils";
 
 const onlyInternational: ApplicationFormValidationRule = ({ phone }) => phone.startsWith("+");
@@ -22,3 +22,12 @@ export const validDate: ApplicationFormValidationRule = ({ birthDate }) =>
 
 export const allowedAge: ApplicationFormValidationRule = ({ birthDate }) =>
   inRange(yearsOf(Date.parse(birthDate)), MIN_AGE, MAX_AGE);
+
+const MAX_SPECIALTY_LENGTH = 50;
+const DEFAULT_SPECIALTIES: List<KnownSpecialty> = ["engineer", "scientist", "psychologist"];
+
+const isKnownSpecialty: ApplicationFormValidationRule = ({ specialty }) =>
+  DEFAULT_SPECIALTIES.includes(specialty);
+
+const isValidCustom: ApplicationFormValidationRule = ({ customSpecialty: custom }) =>
+  exists(custom) && custom.length <= MAX_SPECIALTY_LENGTH;
