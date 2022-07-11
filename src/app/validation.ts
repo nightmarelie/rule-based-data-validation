@@ -1,5 +1,5 @@
 import type { ApplicationFormValidationRule } from "./types";
-import { exists, contains } from "./utils";
+import { exists, contains, inRange, yearsOf } from "./utils";
 
 const onlyInternational: ApplicationFormValidationRule = ({ phone }) => phone.startsWith("+");
 
@@ -13,3 +13,12 @@ export const validateEmail: ApplicationFormValidationRule = ({ email }) =>
 
 export const validatePhone: ApplicationFormValidationRule = (data) =>
   onlyInternational(data) && onlySafeCharacters(data);
+
+const MIN_AGE = 20;
+const MAX_AGE = 50;
+
+export const validDate: ApplicationFormValidationRule = ({ birthDate }) =>
+  !Number.isNaN(Date.parse(birthDate));
+
+export const allowedAge: ApplicationFormValidationRule = ({ birthDate }) =>
+  inRange(yearsOf(Date.parse(birthDate)), MIN_AGE, MAX_AGE);
