@@ -76,12 +76,13 @@ const validateSpecialty = some(specialtyRules);
 const validateExperience = all(experienceRules);
 const validatePassword = all(passwordRules);
 
-export {
+// main validator
+export const validateForm = all([
   validateName,
   validateEmail,
   validatePhone,
-  validatePassword,
   validateBirthDate,
   validateSpecialty,
   validateExperience,
-};
+  validatePassword,
+]);
