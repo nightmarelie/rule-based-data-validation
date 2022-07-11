@@ -5,6 +5,9 @@ import type {
   ValidationRule,
   ApplicationRules,
   ApplicationErrors,
+  ValidationRules,
+  ErrorMessages,
+  ValidationResult,
 } from "./types";
 import { exists, contains, inRange, yearsOf, isNumber } from "./utils";
 import {
@@ -78,17 +81,6 @@ const validateSpecialty = some(specialtyRules);
 const validateExperience = all(experienceRules);
 const validatePassword = all(passwordRules);
 
-// main validator
-const validateForm = all([
-  validateName,
-  validateEmail,
-  validatePhone,
-  validateBirthDate,
-  validateSpecialty,
-  validateExperience,
-  validatePassword,
-]);
-
 const rules: ApplicationRules = {
   name: validateName,
   email: validateEmail,
@@ -110,4 +102,28 @@ const errors: ApplicationErrors = {
     "Your password must be longer than 10 characters, include a capital letter and a digit.",
 };
 
-export { validateForm };
+const createValidator = <TData>(rules: ValidationRules<TData>, errors: ErrorMessages<TData>) => {
+  return function validate(data: TData): ValidationResult<TData> {
+    const result: ValidationResult<TData> = {
+      valid: true,
+      errors: {},
+    };
+
+    Object.keys(rules).forEach((key) => {
+      const field = key as keyof TData;
+      const validate = rules[field];
+
+      if (!validate) return;
+
+      if (!validate(data)) {
+        result.valid = false;
+        result.errors[field] = errors[field];
+      }
+    });
+
+    return result;
+  };
+};
+
+// main validator
+export const validateForm = createValidator(rules, errors);

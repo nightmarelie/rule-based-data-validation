@@ -51,6 +51,8 @@ export type {
   ValidationRule,
   RequiresAll,
   RequiresAny,
+  ErrorMessages,
+  ValidationRules,
   ValidationResult,
   ApplicationRules,
   ApplicationErrors,
